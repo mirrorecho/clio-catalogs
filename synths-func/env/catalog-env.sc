@@ -2,76 +2,87 @@
 
 ClioLibrary.catalog ([\func, \env], {
 
+	~perc = ClioSynthFunc({ arg kwargs;
 
-	~perc = { arg kwargs;
-		var doneAction = kwargs[\def_perc_doneAction] ? 2;
+		var env, level = kwargs[\synth][\amp] ? 0.9;
 
-		var env = EnvGen.kr(Env.perc(
-			attackTime: \attackTime.ir( kwargs[\attackTime] ? 0.01 ),
-			releaseTime: \releaseTime.ir( kwargs[\releaseTime] ? 2 ),
-			level:kwargs[\amp],
-			curve: \curve.ir( kwargs[\curve] ? -4 ),
-		), doneAction:doneAction);
+		env = EnvGen.kr(Env.perc(
+			attackTime: kwargs[\attackTime],
+			releaseTime: kwargs[\releaseTime],
+			level:level,
+			curve: kwargs[\curve],
+		), doneAction:kwargs[\doneAction]);
 
-		kwargs[\sig] = kwargs[\sig] * env;
-	};
+		kwargs[\synth][\sig] = kwargs[\synth][\sig] * env;
 
+	}, *[ // sets default kwargs:
+		doneAction:2,
+		attackTime:0.01,
+		releaseTime:2,
+		curve:-4,
+	]);
 
-	~asr = { arg kwargs;
-		var doneAction = kwargs[\def_asr_doneAction] ? 2;
+	// =====================================================================================
+
+	~asr = ClioSynthFunc({ arg kwargs;
+
+		var sustainLevel = kwargs[\synth][\amp] ? 0.9;
 
 		var env = EnvGen.kr(Env.asr(
-			attackTime: \attackTime.ir( kwargs[\attackTime] ? 0.01 ),
-			sustainLevel:kwargs[\amp],
-			releaseTime: \releaseTime.ir( kwargs[\releaseTime] ? 2 ),
-			curve: \curve.ir( kwargs[\curve] ? -4 ),
-		), gate:kwargs[\gate], doneAction:doneAction);
+			attackTime: kwargs[\attackTime],
+			sustainLevel: sustainLevel,
+			releaseTime: kwargs[\releaseTime],
+			curve: kwargs[\curve],
+		), gate:kwargs[\synth][\gate], doneAction:kwargs[\doneAction]);
 
-		kwargs[\sig] = kwargs[\sig] * env;
-	};
+		kwargs[\synth][\sig] = kwargs[\synth][\sig] * env;
 
+	}, *[ // sets default kwargs:
+		doneAction:2,
+		attackTime:0.01,
+		releaseTime:2,
+		curve:-4,
+	]);
 
-	~adsr = { arg kwargs;
-		var doneAction = kwargs[\def_adsr_doneAction] ? 2;
+	// =====================================================================================
+
+	~adsr = ClioSynthFunc({ arg kwargs;
+
+		var peakLevel = kwargs[\synth][\amp] ? 0.9;
 
 		var env = EnvGen.kr(Env.adsr(
-			attackTime: \attackTime.ir( kwargs[\attackTime] ? 0.01 ),
-			decayTime: \decayTime.ir( kwargs[\decayTime] ? 0.3 ),
-			sustainLevel: \sustainLevel.ir( kwargs[\sustainLevel] ? 0.69 ),
-			releaseTime: \releaseTime.ir( kwargs[\releaseTime] ? 2 ),
-			peakLevel: kwargs[\amp],
-			curve: \curve.ir( kwargs[\curve] ? -4 ),
-		), gate:kwargs[\gate], doneAction:doneAction);
+			attackTime: kwargs[\attackTime],
+			decayTime: kwargs[\decayTime],
+			sustainLevel: kwargs[\sustainLevel],
+			releaseTime: kwargs[\releaseTime],
+			peakLevel: peakLevel,
+			curve: kwargs[\curve],
+		), gate:kwargs[\synth][\gate], doneAction:kwargs[\doneAction]);
 
-		kwargs[\sig] = kwargs[\sig] * env;
-	};
+		kwargs[\synth][\sig] = kwargs[\synth][\sig] * env;
 
+	}, *[ // sets default kwargs:
+		doneAction:2,
+		attackTime:0.01,
+		decayTime:0.3,
+		sustainLevel:0.6,
+		releaseTime:2,
+		curve:-4,
+	]);
 
-	~swell = { arg kwargs;
-		var doneAction = kwargs[\def_swell_doneAction] ? 2;
+	// =====================================================================================
 
-		var env = EnvGen.kr(Env.perc(
-			attackTime: \attackTime.ir( kwargs[\attackTime] ? 2 ),
-			releaseTime: \releaseTime.ir( kwargs[\releaseTime] ? 0.01 ),
-			level:kwargs[\amp],
-			curve: \curve.ir( kwargs[\curve] ? 2 ),
-		), doneAction:doneAction);
+	// same a ~perc with different defaults, but worth defining
+	// separately since it's very useful
+	~swell = ~perc.mimic(*[attackTime:2, releaseTime:0.01, curve:2]);
 
-		kwargs[\sig] = kwargs[\sig] * env;
-	};
+	// =====================================================================================
 
-	~silenceFree = { arg kwargs;
-		var doneAction = kwargs[\def_silenceFree_doneAction] ? 2;
-
-		DetectSilence.ar( kwargs[\sig], doneAction: 2 );
-	};
-
-	~ampScale = { arg kwargs;
-		kwargs[\sig] = kwargs[\sig] * kwargs[\amp];
-	};
-
-
+}, { arg key, env;
+	// f = env.asDict[\perc];
+	// env[\perc].();
 });
 
 
 )
+

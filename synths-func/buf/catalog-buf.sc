@@ -2,56 +2,52 @@
 
 ClioLibrary.catalog ([\func, \buf], {
 
-	~rateIr = { arg kwargs; kwargs[\rate] = \rate.ir( 1 ) };
-
-	~rateKr = { arg kwargs; kwargs[\rate] = \rate.kr( 1 ) };
 
 	// scales the rate of playback based on ratio of freq to a pre-defined centerFreq
 	// HOW COOL!
-	~rateScale = { arg kwargs;
+	~rateScale = ClioSynthFunc({ arg kwargs;
 
-		var centerFreq = \centerFreq.ir( kwargs[\centerFreq] ? 440 );
-		var rateScale = \rateScale.ir( kwargs[\rateScale] ? 0.5 );
+		kwargs[\rate] * ( (kwargs[\synth][\freq] / kwargs[\centerFreq]) ** kwargs[\rateScale]);
 
-		kwargs[\rate] = (kwargs[\rate] ? 1) * ((kwargs[\freq]/centerFreq)**rateScale);
+	}, *[ // set defaults kwargs:
+		rateScale:0.5,
+		centerFreq:440,
+		rate:1,
+	]);
 
-	};
+	// =====================================================================================
 
-	~play = { arg kwargs;
-		var doneAction = kwargs[\def_play_doneAction] ? 2;
+	~play = ClioSynthFunc({ arg kwargs;
 
-		var numChannels = kwargs[\def_numChannels] ? 2;
-		var bufnum = \bufnum.ir( kwargs[\bufnum] );
-		var start = \start.ir( kwargs[\start] ? 0);
-		var rate = kwargs[\rate] ? 1;
-
-		kwargs[\sig] = kwargs[\sig] + PlayBuf.ar(numChannels,
-			bufnum:bufnum,
-			rate:BufRateScale.kr(bufnum) * rate,
-			startPos:BufSampleRate.ir(bufnum) * start,
-			doneAction:doneAction,
+		kwargs[\synth][\sig] = kwargs[\synth][\sig] + PlayBuf.ar( kwargs[\numChannels],
+			bufnum:kwargs[\bufnum],
+			rate:BufRateScale.kr(kwargs[\bufnum]) * kwargs[\rate],
+			startPos:BufSampleRate.ir(kwargs[\bufnum]) * kwargs[\start],
+			doneAction:kwargs[\doneAction],
 		);
 
+	}, *[ // set default kwargs:
+		doneAction:2,
+		numChannels:2,
+		bufnum:nil, // should be defined when factory created
+		start:0,
+		rate:1,
+	]);
 
-	};
+	// =====================================================================================
 
-	~drone = { arg kwargs;
-
-		var numChannels = kwargs[\def_numChannels] ? 2;
-		var bufnum = kwargs[\bufnum];
+	~drone = ClioSynthFunc({ arg kwargs;
 
 		var bufsigs, bufenvs;
-		var length = BufDur.ir(bufnum);
-		var rate = kwargs[\rate] ? 1;
-
-		var envTimes = (length / rate / 4)!3;
+		var length = BufDur.ir(kwargs[\bufnum]);
+		var envTimes = (length / kwargs[\rate] / 4)!3;
 
 		bufsigs = 4.collect{ |i|
-			PlayBuf.ar(numChannels,
-				bufnum:bufnum,
-				rate:BufRateScale.ir(bufnum)*rate,
-				startPos:BufSampleRate.ir(bufnum) * length * i/4,
-				loop:1);
+			PlayBuf.ar( kwargs[\numChannels],
+				bufnum: kwargs[\bufnum],
+				rate:BufRateScale.kr(kwargs[\bufnum]) * kwargs[\rate],
+				startPos:BufSampleRate.ir(kwargs[\bufnum]) * length * i/4,
+			loop:1);
 		};
 
 		bufenvs = [
@@ -63,8 +59,13 @@ ClioLibrary.catalog ([\func, \buf], {
 
 		bufsigs = bufsigs * bufenvs;
 
-		kwargs[\sig] = kwargs[\sig] + Mix.ar(bufsigs);
-	}
+		kwargs[\synth][\sig] = kwargs[\synth][\sig] + Mix.ar(bufsigs);
+
+	}, *[ // set default kwargs:
+		numChannels:2,
+		bufnum:nil, // should be defined when factory created
+		rate:1,
+	]);
 
 
 });
