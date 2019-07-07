@@ -16,7 +16,7 @@ ClioLibrary.catalog ([\func, \add, \percussive], {
 		var freq = kwargs[\synth][\freq];
 
 		randFreqs = { ExpRand(freq/kwargs[\freqSpread], freq*kwargs[\freqSpread]) }!kwargs[\numTones];
-		randAmps = { Rand(0.6*kwargs[\ampScale]/kwargs[\numTones], 1.2*kwargs[\ampScale]/kwargs[\numTones]) }!kwargs[\numTones];
+		randAmps = { Rand(0.6*kwargs[\ampMul]/kwargs[\numTones], 1.2*kwargs[\ampMul]/kwargs[\numTones]) }!kwargs[\numTones];
 
 		tones = Klang.ar(`[randFreqs, randAmps]);
 
@@ -28,7 +28,7 @@ ClioLibrary.catalog ([\func, \add, \percussive], {
 		numTones:9,
 		tonesSplay:0.4,
 		freqSpread:1.5,
-		ampScale:1,
+		ampMul:1,
 	]);
 
 	// =====================================================================================
@@ -45,7 +45,7 @@ ClioLibrary.catalog ([\func, \add, \percussive], {
 		env = EnvGen.kr(Env.perc(
 			attackTime:kwargs[\attackTime],
 			releaseTime:kwargs[\releaseTime],
-			level:kwargs[\ampScale],
+			level:kwargs[\ampMul],
 			curve:kwargs[\curve])
 		);
 
@@ -54,7 +54,7 @@ ClioLibrary.catalog ([\func, \add, \percussive], {
 	}, *[ // set default kwargs:
 		oscType:PinkNoise,
 		lpfFreq:244,
-		ampScale:0.9,
+		ampMul:0.9,
 		attackTime:0.01,
 		releaseTime:2,
 		curve:-8,
@@ -70,7 +70,7 @@ ClioLibrary.catalog ([\func, \add, \percussive], {
 		env = EnvGen.kr(Env.perc(
 			attackTime:kwargs[\attackTime],
 			releaseTime:kwargs[\releaseTime],
-			level:kwargs[\ampScale],
+			level:kwargs[\ampMul],
 			curve:kwargs[\curve])
 		);
 
@@ -79,7 +79,7 @@ ClioLibrary.catalog ([\func, \add, \percussive], {
 	}, *[ // set default kwargs:
 		oscType:PinkNoise,
 		hpfFreq:6000,
-		ampScale:0.9,
+		ampMul:0.9,
 		attackTime:0.001,
 		releaseTime:1,
 		curve:-16,
@@ -92,11 +92,11 @@ ClioLibrary.catalog ([\func, \add, \percussive], {
 		var env, sig;
 		var freq = kwargs[\synth][\freq];
 
-		sig = Resonz.ar(kwargs[\oscType].ar(kwargs[\ampScale]!2), freq*2, 0.4, 2) * AmpComp.kr(freq, 60, 0.69);
+		sig = Resonz.ar(kwargs[\oscType].ar(kwargs[\ampMul]!2), freq*2, 0.4, 2) * AmpComp.kr(freq, 60, 0.69);
 		env = EnvGen.kr(Env.perc(
 			attackTime:kwargs[\attackTime],
 			releaseTime:kwargs[\releaseTime],
-			level:kwargs[\ampScale],
+			level:kwargs[\ampMul],
 			curve:kwargs[\curve])
 		);
 
@@ -104,7 +104,7 @@ ClioLibrary.catalog ([\func, \add, \percussive], {
 
 	}, *[ // set kwarg defaults
 		oscType:WhiteNoise,
-		ampScale:0.9,
+		ampMul:0.9,
 		attackTime:0.01,
 		releaseTime:1,
 		curve:-16,

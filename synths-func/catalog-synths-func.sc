@@ -25,9 +25,17 @@ ClioLibrary.catalog ([\func], {
 
 	// =====================================================================================
 
-	~ampScale = ClioSynthFunc({ arg kwargs;
-		kwargs[\synth][\sig] = kwargs[\synth][\sig] * kwargs[\synth][\amp] ? 1;
-	});
+	~amp = ClioSynthFunc({ arg kwargs;
+		kwargs[\synth][\sig] = kwargs[\synth][\sig] * (kwargs[\synth][\amp] ? 1) * kwargs[\ampMul];
+	}, *[
+		ampMul:1,
+	]);
+
+	~splay = ClioSynthFunc({ arg kwargs;
+		kwargs[\synth][\sig] = Splay.ar(kwargs[\synth][\sig], kwargs[\spread]);
+	}, *[
+		spread:0.8
+	]);
 
 	// TO DO... add AmpComp, possibly others
 

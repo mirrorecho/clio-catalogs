@@ -2,11 +2,11 @@
 
 ClioLibrary.catalog ([\func, \add, \noisy], {
 
-	~noiseBand1 = ClioSynthFunc({ arg kwargs;
+	~noiseBand = ClioSynthFunc({ arg kwargs;
 
 		var sig, env;
 
-		sig = kwargs[\oscType].ar((2*kwargs[\ampScale])!2) * (1/(kwargs[\rq]**0.66));
+		sig = kwargs[\oscType].ar(kwargs[\ampScale]!2) * (1/(kwargs[\rq]**0.66));
 
 		sig = BPF.ar(sig, kwargs[\synth][\freq], kwargs[\rq]);
 
