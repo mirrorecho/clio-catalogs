@@ -16,10 +16,11 @@ ClioLibrary.catalog ([\func], {
 
 	~silenceFree = ClioSynthFunc({ arg kwargs;
 
-		DetectSilence.ar( kwargs[\synth][\sig], doneAction:kwargs[\doneAction] );
+		DetectSilence.ar( kwargs[\synth][\sig], time:kwargs[\time], doneAction:kwargs[\doneAction] );
 
 	}, *[ // defaults:
 		doneAction:2,
+		time:0.1,
 	]);
 
 	// =====================================================================================

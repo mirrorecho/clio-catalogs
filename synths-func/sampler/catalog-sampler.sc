@@ -54,7 +54,7 @@ ClioLibrary.catalog ([\func, \sampler], {
 			bufnum:bufnum,
 			rate:BufRateScale.kr(bufnum)*rate,
 			startPos:BufSampleRate.ir(bufnum) * kwargs[\start],
-			doneAction:2,
+			doneAction:kwargs[\doneAction],
 		);
 
 	}, *[

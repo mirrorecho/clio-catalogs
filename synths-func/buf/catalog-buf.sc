@@ -36,6 +36,32 @@ ClioLibrary.catalog ([\func, \buf], {
 
 	// =====================================================================================
 
+	~stereoFloat = ClioSynthFunc({ arg kwargs;
+
+		kwargs[\synth][\sig] = kwargs[\synth][\sig] + [PlayBuf.ar(1,
+			bufnum:kwargs[\bufnum],
+			rate:BufRateScale.kr(kwargs[\bufnum]) * kwargs[\rate],
+			startPos:BufSampleRate.ir(kwargs[\bufnum]) * kwargs[\start],
+			doneAction:kwargs[\doneAction],
+		),
+		PlayBuf.ar(1,
+			bufnum:kwargs[\bufnum],
+			rate:BufRateScale.kr(kwargs[\bufnum]) * kwargs[\rate]*kwargs[\floatRateMul],
+			startPos:BufSampleRate.ir(kwargs[\bufnum]) * kwargs[\start],
+			doneAction:0,
+		)
+		];
+
+	}, *[ // set default kwargs:
+		doneAction:2,
+		bufnum:nil, // should be defined when factory created
+		start:0,
+		rate:1,
+		floatRateMul:1.01,
+	]);
+
+	// =====================================================================================
+
 	~drone = ClioSynthFunc({ arg kwargs;
 
 		var bufsigs, bufenvs;
