@@ -70,6 +70,40 @@ ClioLibrary.catalog ([\func, \env], {
 		curve:-4,
 	]);
 
+
+	~mesa = ClioSynthFunc({ arg kwargs;
+
+		var env = EnvGen.kr(Env.xyc([
+			[0, 0, kwargs[\upCurve]],
+			[kwargs[\upTime],
+				kwargs[\upLevel], kwargs[\mesaCurve]],
+			[kwargs[\upTime]+kwargs[\mesaTime],
+				kwargs[\mesaLevel], kwargs[\downCurve]],
+			[kwargs[\upTime]+kwargs[\mesaTime]+kwargs[\downTime],
+				kwargs[\downLevel], kwargs[\fadeCurve]],
+			[kwargs[\upTime]+kwargs[\mesaTime]+kwargs[\downTime]+kwargs[\fadeTime],
+				0, 0]
+		]), gate:kwargs[\synth][\gate], doneAction:kwargs[\doneAction]);
+
+
+
+		kwargs[\synth][\sig] = kwargs[\synth][\sig] * env * kwargs[\synth][\amp];
+
+	}, *[ // sets default kwargs:
+		doneAction:2,
+		upCurve:24,
+		upTime:2,
+		upLevel:1,
+		mesaCurve:\lin,
+		mesaTime:0.5,
+		mesaLevel:0.8,
+		downCurve:-8,
+		downTime:0.2,
+		downLevel:0.2,
+		fadeCurve:\lin,
+		fadeTime:2,
+	]);
+
 	// =====================================================================================
 
 	// same a ~perc with different defaults, but worth defining

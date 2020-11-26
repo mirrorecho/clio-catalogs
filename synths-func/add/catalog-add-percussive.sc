@@ -112,6 +112,46 @@ ClioLibrary.catalog ([\func, \add, \percussive], {
 
 	// =====================================================================================
 
+
+	// default values are "U"-ish
+	// USEFUL VARIANTS:
+	// (
+	// 	U: [formant1: 250, formant2: 595, formant_amp:0.04],
+	// 	O: [formant1: 360, formant2: 640, formant_amp:0.01],
+	// )
+	// TO DO: a better implementation of this might be to use klank to add formants to any signal
+	// TO DO MAYBE: formants as their own synth function?
+	~formantTom = { arg kwargs, noiseAmt=0.5, formant1=250, formant2=595, formantAmp=0.04;
+
+		var sig, lpf_freq;
+
+		var formant_count = kwargs[\def_formant_count] ? 3;
+		var formant_spread1 = kwargs[\def_formant_spread1] ? 1.04;
+		var formant_spread2 = kwargs[\def_formant_spread2] ? 1.02;
+		var noise_spread = kwargs[\def_noise_spread] ? 1.1;
+
+		var freq = kwargs[\freq]; // simply to save typing
+
+		var formant_freqs = ExpRand((formant1/formant_spread1)!formant_count, (formant1*formant_spread1)!formant_count)
+		++ ExpRand((formant2/formant_spread2)!formant_count, (formant2*formant_spread2)!formant_count);
+
+		var formant_amps = (formantAmp!formant_count)++((formantAmp/2)!formant_count) * kwargs[\amp];
+
+		lpf_freq = noiseAmt * 16;
+
+		sig = (LPF.ar(Resonz.ar(WhiteNoise.ar(1.0!2), ExpRand(freq, freq*noise_spread), noiseAmt/4.0, 20/noiseAmt), freq*8)
+			+ LPF.ar(Resonz.ar(WhiteNoise.ar(1.0!2), ExpRand(freq, freq/noise_spread), noiseAmt/4.0, 20/noiseAmt), lpf_freq*8))
+		* AmpComp.kr(freq, 90, 0.1)
+		+ Splay.ar(Klang.ar(`[formant_freqs, formant_amps, nil]), 0.3);
+
+		kwargs[\sig] = kwargs[\sig] + sig;
+
+	};
+
+
+
+
+
 }
 );
 

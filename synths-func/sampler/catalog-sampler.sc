@@ -66,6 +66,7 @@ ClioLibrary.catalog ([\func, \sampler], {
 
 	// TO DO... add float
 
+	// TO DO... add drone
 
 });
 

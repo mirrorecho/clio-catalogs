@@ -2,6 +2,7 @@
 
 ClioLibrary.catalog ([\func, \fx], {
 
+
 	~busIn = ClioSynthFunc({ arg kwargs;
 		kwargs[\synth][\sig] = kwargs[\synth][\sig] + In.ar(kwargs[\bus], kwargs[\numChannels]);
 
@@ -12,7 +13,7 @@ ClioLibrary.catalog ([\func, \fx], {
 
 	// =====================================================================================
 
-	// TO DO: create reverb1 using FreeVerb
+	// TO DO: create reverb using FreeVerb
 
 	// sigs don't need same kwargs for these, such as freq and amp
 	~reverb2 = ClioSynthFunc({ arg kwargs;
@@ -50,7 +51,7 @@ ClioLibrary.catalog ([\func, \fx], {
 
 	// =====================================================================================
 
-	~distortion1 = ClioSynthFunc({ arg kwargs;
+	~distortion = ClioSynthFunc({ arg kwargs;
 
 		// a pretty good distortion algorithm:
 		var sigDistort = (kwargs[\synth][\sig] * (3 + (kwargs[\distortion] * 40))).distort * (1-(kwargs[\distortion]/1.4)) * 0.4;
