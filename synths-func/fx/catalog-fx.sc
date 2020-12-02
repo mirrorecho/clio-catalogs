@@ -64,6 +64,31 @@ ClioLibrary.catalog ([\func, \fx], {
 	]);
 
 	// =====================================================================================
+	// combines echo and distortion (only the echo is distorted...)
+	~echoDistortion = ClioSynthFunc({ arg kwargs;
+
+		// a pretty good distortion algorithm:
+		var sigDistort = (kwargs[\synth][\sig] * (3 + (kwargs[\distortion] * 40))).distort * (1-(kwargs[\distortion]/1.4)) * 0.4;
+
+		sigDistort = (kwargs[\synth][\sig]*(1-kwargs[\mix])) + (sigDistort*kwargs[\mix]);
+
+		kwargs[\synth][\sig] = CombL.ar( sigDistort,
+			maxdelaytime:kwargs[\delaytime],
+			delaytime:kwargs[\delaytime],
+			decaytime:kwargs[\decaytime],
+			mul:kwargs[\mul],
+		add:kwargs[\synth][\sig]);
+
+	}, *[ // defaults:
+		delaytime:0.5,
+		decaytime:4,
+		distortion:0.4,
+		mix:0.66,
+		mul:0.4,
+	]);
+
+
+	// =====================================================================================
 
 	// TO DO: ringing fx
 

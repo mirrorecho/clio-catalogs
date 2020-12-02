@@ -20,7 +20,7 @@ ClioLibrary.catalog ([\func, \add, \bell], {
 		var randAmps = {amp/numRandPartials*Rand(0.1,0.3)}!numRandPartials;
 		var amps = fixedAmps ++ randAmps;
 
-		kwargs[\synth][\sig] = DynKlang.ar(
+		kwargs[\synth][\sig] = kwargs[\synth][\sig] + DynKlang.ar(
 			`[partials,amps],
 		);
 

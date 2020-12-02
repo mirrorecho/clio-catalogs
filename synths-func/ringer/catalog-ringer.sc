@@ -72,7 +72,28 @@ ClioLibrary.catalog ([\func, \ringer], {
 	]);
 
 
-	// TO DO, a ringer with DynKlank
+	~ringNotes = ClioSynthFunc({ arg kwargs;
+
+		var specsArray = [
+			(kwargs[\ringNotes]+60).midicps,
+			kwargs[\ringAmps] * kwargs[\ampScale],
+			kwargs[\ringTimes],
+		];
+
+		var ringSig = kwargs[\oscType].ar(`specsArray, kwargs[\synth][\sig]);
+
+		kwargs[\synth][\sig] = (ringSig * kwargs[\mix]) + (kwargs[\synth][\sig] * (1-kwargs[\mix]));
+
+	}, *[ // defaults:
+		oscType:Klank, // can replace Klank with DynKlank to make it dynamic
+		ringNotes:[0],
+		ringTimes:[1],
+		ringAmps:[1],
+		mix:0.9,
+		ampScale:1,
+	]);
+
+	// TO DO, a ringer with a pitch cluster
 
 
 });
